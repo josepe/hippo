@@ -1,0 +1,4 @@
+classdef DataCreator (Abstract)
+    % Factory Class
+    methods
+        create

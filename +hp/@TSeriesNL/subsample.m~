@@ -1,0 +1,5 @@
+function out=subsample(in,newfreq)
+r=in.sampleFreq/newfreq;
+dataout=resample(in.data,newfreq,in.sampleFreq);
+tout=
+end

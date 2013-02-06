@@ -1,0 +1,12 @@
+classdef TSeries
+    
+    methods (Abstract)
+        
+        out=clone_resample(in,newfreq) %clone object at a different sampling frequency
+        out=subsample(in,newfreq)
+        out=prosoverlap(in,len,doverlap)
+        
+    end
+    
+    
+end  % classdef

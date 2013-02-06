@@ -1,0 +1,7 @@
+function out=chita_ripple_filter(in,Hd)
+%filtra se?al in.dataSamples usando objeto filtro Hd
+ 
+out=in;
+filtData=
+out.dataSamples=in.dataSamples(ind(1):ind(2));
+out.t_events=in.t_events(out.t_events>=cut(1)&out.t_events<=cut(2));

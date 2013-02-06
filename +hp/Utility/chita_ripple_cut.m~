@@ -1,0 +1,16 @@
+    function out=chita_ripple_cut(in,cut)
+% carga datos desde formato neuralynx
+% genera timestamps de eventos de detecci?n
+% outputs en milisegundos
+% parameters estructura contiene los par?metros
+ 
+% params.dir directorio archivo de eventos y datos
+% params.eventfile directorio y nombre del archivo de eventos
+% params.datafile directorio y nombre de archivo de datos
+
+out=in;
+indices=interp1(in.times,1:length(in.times),cut);
+ind=round(indices);
+out.times=in.times(ind(1):ind(2));
+out.dataSamples=in.dataSamples(ind(1):ind(2));
+out.t_events=in.t_events(out.t_events>=cut(1)&out.t_events<=cut(2));

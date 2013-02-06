@@ -1,0 +1,27 @@
+
+classdef DataCreatorNeuralynx < hp.DataCreator
+    methods 
+         tseries=createData(dataFile,eventsFile)
+            
+            events = getRawTTLs(eventsFile);
+            [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
+            [wave.timestamps,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
+            
+            %%% time grid %%%
+            wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
+            
+            %%%%event times%%%
+            evn=events(2:end-1,1);
+            ts=wave.tvector(1:512:length(wave.tvector));
+            wave.tevents=interp1(wave.timestamps',ts',evn);            
+            
+            %% data files %%
+            wave.dir=pwd;
+            wave.dataFile=dataFile;
+            wave.eventsFile=eventsFile;
+            
+            
+            
+        end
+    end
+end
