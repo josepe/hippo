@@ -1,4 +1,4 @@
-classdef Band
+classdef Band <handle
     properties(Constant)
        
     end
@@ -45,7 +45,7 @@ classdef Band
 
         end
         
-        function clone_resampleR(in,newfreq)
+        function out=clone_resampleR(in,newfreq)
             import hp.*
             out=in;
             out.data=Band.subsample(in,newfreq);
@@ -53,6 +53,16 @@ classdef Band
             out.tvector=Band.t_vector(newfreq,leng);
             out.nrSamples=leng;
             out.sampleFreq=newfreq;
+        end
+        
+        function clone_resampleRR(in,newfreq)
+            import hp.*
+            
+            in.data=Band.subsample(in,newfreq);
+            leng=length(in.data);
+            in.tvector=Band.t_vector(newfreq,leng);
+            in.nrSamples=leng;
+            in.sampleFreq=newfreq;
         end
         
     end % methods

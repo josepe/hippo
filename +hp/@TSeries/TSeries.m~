@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 classdef TSeries
     properties(Constant)
        
@@ -54,6 +55,18 @@ classdef TSeries
         out=clone_resample(in,newfreq) %clone object at a different sampling frequency
         out=subsample(in,newfreq)
         out=prosoverlap(in,len,doverlap)
+=======
+classdef TSeries < handle
+    
+    
+    properties (Abstract)
+        dir
+        dataFile
+        nrSamples
+        sampleFreq
+        data
+        tvector
+>>>>>>> move utilities
         
         function t=t_vector(sampfreq,N)
             t=0:1/sampfreq:(N-1)/sampfreq;
@@ -62,6 +75,27 @@ classdef TSeries
         plot_events(in)
         
     end
+    
+    methods
+        %Constructor
+        function tseries = TSeries(obj)
+            
+        end
+        
+        function clone_resampleRR(in,newfreq)
+            import hp.*
+            
+            in.data=Band.subsample(in,newfreq);
+            leng=length(in.data);
+            in.tvector=Band.t_vector(newfreq,leng);
+            in.nrSamples=leng;
+            in.sampleFreq=newfreq;
+        end
+        
+        
+    end % methods
+    
+    
     
     
 end  % classdef

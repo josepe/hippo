@@ -1,4 +1,12 @@
-classdef DataCreator (Abstract)
+classdef DataCreator 
+    
+    properties (Abstract
+        data
+    end
+        
+        
     % Factory Class
-    methods
-        create
+    methods (Abstract)
+        createData(obj)
+    end
+end
