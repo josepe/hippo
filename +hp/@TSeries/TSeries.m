@@ -11,20 +11,25 @@ classdef TSeries < handle
         
     end
     
-    methods 
+    methods
         %Constructor
         function tseries = TSeries(obj)
-
+            
+        end
+        
+        function clone_resample(in,newfreq)
+            import hp.*
+            in.data=subsample(in,newfreq);
+            leng=length(in.data);
+            in.tvector=t_vector(newfreq,leng);
+            in.nrSamples=leng;
+            in.sampleFreq=newfreq;
         end
         
         
     end % methods
     
-    methods (Abstract)
-        
-         out=clone_resample(in,newfreq) %clone object at a different sampling frequency
-         %out=subsample(in,newfreq)        
-    end
+    
     
     
 end  % classdef

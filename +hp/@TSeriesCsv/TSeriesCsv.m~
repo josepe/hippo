@@ -2,12 +2,6 @@ classdef TSeriesCsv < hp.TSeries
     
     
     properties 
-        timestamps
-        nrBlocks
-        isContinous
-        headerInfo
-        tevents
-        eventsFile
         
         %Superclass properties
         dir
@@ -25,29 +19,20 @@ classdef TSeriesCsv < hp.TSeries
         
 
         function tseries=TSeriesCsv(csvFile)
-            
-          
             import hp.*
             
             tseries.nrSamples
             tseries.sampleFreq
            
-            tseries.data = getRawCSCData(dataFile, 0, tseries.nrSamples;
+            tseries.data = dataFile, 
+            tseries.nrSamples;
             
             %%% time grid %%%
             tseries.tvector=t_vector(tseries.sampleFreq,tseries.nrSamples);
             
-            %%%%event times%%%
-            evn=events(2:end-1,1);
-            ts=tseries.tvector(1:512:length(tseries.tvector));
-            tseries.tevents=interp1(tseries.timestamps',ts',evn);
-            
             %% data files %%
             tseries.dir=pwd;
             tseries.dataFile=dataFile;
-            tseries.eventsFile=eventsFile;
-            
-
             
         end
         

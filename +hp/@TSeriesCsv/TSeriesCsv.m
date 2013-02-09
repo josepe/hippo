@@ -19,8 +19,6 @@ classdef TSeriesCsv < hp.TSeries
         
 
         function tseries=TSeriesCsv(csvFile)
-            
-         
             import hp.*
             
             tseries.nrSamples
@@ -31,7 +29,6 @@ classdef TSeriesCsv < hp.TSeries
             
             %%% time grid %%%
             tseries.tvector=t_vector(tseries.sampleFreq,tseries.nrSamples);
-            
             
             %% data files %%
             tseries.dir=pwd;

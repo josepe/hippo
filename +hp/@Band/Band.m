@@ -52,7 +52,7 @@ classdef Band <handle
             leng=length(out.data);
             out.tvector=Band.t_vector(newfreq,leng);
             out.nrSamples=leng;
-            out.sampleFreq=newfreq;
+            out.sampleFreq=newfreq; 
         end
         
         function clone_resampleRR(in,newfreq)

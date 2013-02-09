@@ -87,7 +87,7 @@ classdef TSeries < handle
             
             in.data=Band.subsample(in,newfreq);
             leng=length(in.data);
-            in.tvector=Band.t_vector(newfreq,leng);
+            in.tvector=t_vector(newfreq,leng);
             in.nrSamples=leng;
             in.sampleFreq=newfreq;
         end

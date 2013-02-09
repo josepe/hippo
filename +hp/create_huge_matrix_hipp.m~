@@ -1,0 +1,14 @@
+function [tout hout]=create_huge_matrix_hipp()
+di=dir();
+for k=1:10
+    cd(di(k).name);
+    dht=dir('t-unit*');
+    dat=importdata(dbt(1).name);
+    datat{k}=extractspikes(dat.data,1000);
+    dhh=dir('h-unit*');
+    dat=importdata(dbh(1).name);
+    datah{k}=extractspikes(dat.data,1000);
+end
+houtdatah;
+tout=datat;
+    
