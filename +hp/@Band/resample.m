@@ -1,9 +1,10 @@
          function out=resample(in,newfreq)
+         import hp.*
             out=in;
-            out.data=Band.subsample(in,newfreq);
+            out.data=resample(in.data,newfreq,in.sampleFreq);
             leng=length(out.data);
             out.tvector=Band.t_vector(newfreq,leng);
             out.nrSamples=leng;
-            out.tevents=interp1(in.timestamps',ts',in.tevents); 
+            out.sampleFreq=newfreq;
             
         end
