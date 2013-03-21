@@ -24,13 +24,10 @@ classdef Band <handle
     
     methods
         %Constructor
-        function wave = Band(varargin)
+        function wave = Band(dataFile,eventsFile)
             import hp.*
-            options = struct('dataFile',[],'eventsFile',[],'inwave',[]);
-            optionNames = fieldnames(options);
             
             
-            dataFile,eventsFile
             [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
             [wave.timestamps,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
             
@@ -65,10 +62,16 @@ classdef Band <handle
         
         out=resample(in,newfreq) %clone object at a different sampling frequency
         out=prosoverlap(in,len,doverlap)
-        out=chita_ripple_cut(in,cut)
+        out=cut(in,cut)
         out=reshape(in,winlength)
-        out=clone(in)
+        out=indices(in,times);
+        out=removelines(in,freqs,Q)
+        out=bandpass(in,freqs,
         
+        function ind=index(in,times)
+            in=interp1(in.tvector,(1:length(in.tvector))',times);
+            ind=round(in);
+        end
         
         function t=t_vector(sampfreq,N)
             t=(0:1/sampfreq:(N-1)/sampfreq)';
