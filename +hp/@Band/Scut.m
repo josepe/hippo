@@ -1,4 +1,4 @@
-function out=cut(in,cut)
+function out=Scut(in,cut)
 % out, estructura de datoa identica a in
 % tiempo en segundos, tiempos truncados
 % entre [cut(1) cut(2)]

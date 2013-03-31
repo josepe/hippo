@@ -1,4 +1,4 @@
-         function  out=reshape(in,winlength)
+         function  out=Sreshape(in,winlength)
          %winlength in seconds
             import hp.*
             out=in;

@@ -1,4 +1,4 @@
-         function out=resample(in,newfreq)
+         function out=Sresample(in,newfreq)
          import hp.*
             out=in;
             out.data=resample(in.data,newfreq,in.sampleFreq);

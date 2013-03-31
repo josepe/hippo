@@ -1,4 +1,4 @@
-function plot_events(in)
+function Splot_events(in)
 
 %grafica datos y eventos en objeto in
 

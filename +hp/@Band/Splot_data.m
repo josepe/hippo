@@ -1,4 +1,4 @@
-function plot_data(in,range)
+function Splot_data(in,range)
 import hp.*
 %grafica datos y eventos en objeto in
 if nargin <2

@@ -1,4 +1,4 @@
-function out=removelines(in,freqs,Q)
+function out=Sremovelines(in,freqs,Q)
 import hp.*
 out=in;
 if nargin<3
