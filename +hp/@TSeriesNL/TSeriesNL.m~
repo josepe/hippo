@@ -1,52 +1,43 @@
-classdef TSeriesNL < hp.TSeries
+classdef TSeriesNL < TSeries
     
     
-    properties 
+    properties (Hidden)
         timestamps
         nrBlocks
         isContinous
         headerInfo
-        tevents
-        eventsFile
+    end
+    
+    properties
         dir
         dataFile
+        eventsFile
         nrSamples
         sampleFreq
         data
         tvector
+        tevents
+
     end
     
-   
-    
-
     methods
+        %Constructor
+        function tseries = TSeriesNL(vargin)
+            tseries=tseries@TSeries(vargin);
         
-
-        function tseries=TSeriesNL(dataFile,eventsFile)
-            
-          
-            import hp.*
-            
-            events = getRawTTLs(eventsFile);
-            [tseries.timestamps,tseries.nrBlocks,tseries.nrSamples,tseries.sampleFreq,tseries.isContinous,tseries.headerInfo]=getRawCSCTimestamps(dataFile);
-            [tseries.timestamps,tseries.data] = getRawCSCData(dataFile, 0, tseries.nrSamples, 2 );
-            
-            %%% time grid %%%
-            tseries.tvector=t_vector(tseries.sampleFreq,tseries.nrSamples);
-            
-            %%%%event times%%%
-            evn=events(2:end-1,1);
-            ts=tseries.tvector(1:512:length(tseries.tvector));
-            tseries.tevents=interp1(tseries.timestamps',ts',evn);
-            
-            %% data files %%
-            tseries.dir=pwd;
-            tseries.dataFile=dataFile;
-            tseries.eventsFile=eventsFile;
-            
-
-            
         end
         
-       
-              k,kkcnbmmm,.%     end
+        
+    end % methods
+    
+%     methods (Static)
+%         
+%         out=clone_resample(in,newfreq) %clone object at a different sampling frequency
+%         out=subsample(in,newfreq)
+%         out=prosoverlap(in,len,doverlap)
+%         plot_events(in)
+%         
+%     end
+    
+    
+end  % classdef

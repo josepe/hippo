@@ -6,13 +6,10 @@ function out=chita_ripple_cut(in,cut)
 % out.t_events
 % out.dataSamples datos
 % out.sampleFreq
-import hp.*
+
 out=in;
-indices=interp1(in.tvector,(1:length(in.tvector))',cut);
+indices=interp1(in.times,1:length(in.times),cut);
 ind=round(indices);
-out.tvector=in.tvector(ind(1):ind(2));
-out.data=in.data(ind(1):ind(2));
-out.tevents=in.tevents(out.tevents>=cut(1)&out.tevents<=cut(2));
-out.nrSamples=length(out.data);
-            
-end
+out.times=in.times(ind(1):ind(2));
+out.dataSamples=in.dataSamples(ind(1):ind(2));
+out.t_events=in.t_events(out.t_events>=cut(1)&out.t_events<=cut(2));

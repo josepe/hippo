@@ -25,10 +25,8 @@ classdef Band <handle
     methods
         %Constructor
         function wave = Band(dataFile,eventsFile)
-            import hp.*
-            
-            
-            
+
+            events = getRawTTLs(eventsFile);
             [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
             [wave.timestamps,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
             
@@ -36,26 +34,15 @@ classdef Band <handle
             wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
             
             %%%%event times%%%
-            
+            evn=events(2:end-1,1);
             ts=wave.tvector(1:512:length(wave.tvector));
-            
-            if nargin > 1
-                events = getRawTTLs(eventsFile);
-                evn=events(2:end-1,1);
-                wave.eventsFile=eventsFile;
-                wave.tevents=interp1(wave.timestamps',ts',evn);
-                
-            else
-                wave.eventsFile=[];
-                wave.tevents=[];
-                
-            end
+            wave.tevents=interp1(wave.timestamps',ts',evn);            
             
             %% data files %%
             wave.dir=pwd;
             wave.dataFile=dataFile;
-            
-            
+            wave.eventsFile=eventsFile;
+
         end
         
         function out=clone_resampleR(in,newfreq)
@@ -85,16 +72,12 @@ classdef Band <handle
         out=clone_resample(in,newfreq) %clone object at a different sampling frequency
         out=subsample(in,newfreq)
         out=prosoverlap(in,len,doverlap)
-        out=chita_ripple_cut(in,cut)
-        out=clone_reshape(in,winlength)
-        
         
         function t=t_vector(sampfreq,N)
-            t=(0:1/sampfreq:(N-1)/sampfreq)';
+            t=0:1/sampfreq:(N-1)/sampfreq;
         end
         
         plot_events(in)
-        plot_data(in)
         
     end
     
