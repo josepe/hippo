@@ -8,11 +8,15 @@ function out=cut(in,cut)
 % out.sampleFreq
 import hp.*
 out=in;
-indices=interp1(in.tvector,(1:length(in.tvector))',cut);
+indices=interp1(in.tvector(:),(1:length(in.tvector(:)))',cut);
 ind=round(indices);
+out.tvector=in.tvector(:);
 out.tvector=in.tvector(ind(1):ind(2));
+out.data=in.data(:);
 out.data=in.data(ind(1):ind(2));
-out.tevents=in.tevents(out.tevents>=cut(1)&out.tevents<=cut(2));
+if ~isempty(in.tevents)
+    out.tevents=in.tevents(out.tevents>=cut(1)&out.tevents<=cut(2));
+end
 out.nrSamples=length(out.data);
-            
+
 end
