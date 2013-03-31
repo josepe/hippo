@@ -38,7 +38,6 @@ classdef Band <handle
                     [wave.timestamps,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
                     
                     %%% time grid %%%
-
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
                     %%%%event times%%%
@@ -50,7 +49,9 @@ classdef Band <handle
                         events = getRawTTLs(eventsFile);
                         evn=events(2:end-1,1);
                         wave.eventsFile=eventsFile;
-                        wave.tevents=interp1(wave.timestamps',ts',evn); 
+                        wave.tevents=interp1(wave.timestamps',ts',evn);
+                        
+                        
                     end
                     
                 case 'crcns'
@@ -70,7 +71,7 @@ classdef Band <handle
                     
                     dat= LoadBinary(str.FileName,str.Channels,str.nChannels, str.method, str.intype, str.outtype, str.Periods);
                    
-                    wave.data=double(dat')./2^15*200; %VERIFICAR FORMULA
+                    wave.data=double(dat)./2^15*200; %VERIFICAR FORMULA
                    
                     wave.sampleFreq=varargin{2};
                     
