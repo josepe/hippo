@@ -1,9 +1,8 @@
-         function  out=reshape(in,winlength)
+         function  out= reshape(in,winlength)
          %winlength in seconds
             import hp.*
             out=in;
             len=length(out.data(:));
-            if 
             samplesperwin=floor(winlength*out.sampleFreq);
             nwins=floor(len/samplesperwin);
             usedata=in.data(1:nwins*samplesperwin);
