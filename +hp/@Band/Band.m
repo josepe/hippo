@@ -82,6 +82,15 @@ classdef Band <handle
                     
                     wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
+                case 'branch'
+                    % Copy all non-hidden properties.
+                    this=varargin{1};
+                    p = properties(this);
+                    for i = 1:length(p)
+                        wave.(p{i}) = this.(p{i});
+                    end
+
+                    
             end
             
             
@@ -89,6 +98,10 @@ classdef Band <handle
             %% data files %%
             wave.dir=pwd;
             
+        end
+        
+        function out=clone(in)
+            out=hp.Band.copy(in);
         end
         
        
@@ -108,6 +121,7 @@ classdef Band <handle
         
         
         out=addchannel(in,data)
+        new = copy(this)
         
         function ind=index(in,times)
             in=interp1(in.tvector,(1:length(in.tvector))',times);
