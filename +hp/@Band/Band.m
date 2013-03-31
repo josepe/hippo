@@ -65,6 +65,8 @@ classdef Band <handle
         out=cut(in,cut)
         out=reshape(in,winlength)
         out=indices(in,times);
+        out=removelines(in,freqs,Q)
+        out=bandpass(in,band)
         
         function ind=index(in,times)
             in=interp1(in.tvector,(1:length(in.tvector))',times);
