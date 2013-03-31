@@ -28,6 +28,7 @@ classdef Band <handle
             import hp.*
             
             
+            
             [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
             [wave.timestamps,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
             
@@ -53,23 +54,40 @@ classdef Band <handle
             %% data files %%
             wave.dir=pwd;
             wave.dataFile=dataFile;
-                
-        end 
-       
+            
+            
+        end
+        
+        function out=clone_resampleR(in,newfreq)
+            import hp.*
+            out=in;
+            out.data=Band.subsample(in,newfreq);
+            leng=length(out.data);
+            out.tvector=Band.t_vector(newfreq,leng);
+            out.nrSamples=leng;
+            out.sampleFreq=newfreq; 
+        end
+        
+        function clone_resampleRR(in,newfreq)
+            import hp.*
+            
+            in.data=Band.subsample(in,newfreq);
+            leng=length(in.data);
+            in.tvector=Band.t_vector(newfreq,leng);
+            in.nrSamples=leng;
+            in.sampleFreq=newfreq;
+        end
+        
     end % methods
     
     methods (Static)
         
-        out=resample(in,newfreq) %clone object at a different sampling frequency
+        out=clone_resample(in,newfreq) %clone object at a different sampling frequency
+        out=subsample(in,newfreq)
         out=prosoverlap(in,len,doverlap)
-        out=cut(in,cut)
-        out=reshape(in,winlength)
-        out=indices(in,times);
+        out=chita_ripple_cut(in,cut)
+        out=clone_reshape(in,winlength)
         
-        function ind=index(in,times)
-            in=interp1(in.tvector,(1:length(in.tvector))',times);
-            ind=round(in);
-        end
         
         function t=t_vector(sampfreq,N)
             t=(0:1/sampfreq:(N-1)/sampfreq)';
@@ -78,7 +96,7 @@ classdef Band <handle
         plot_events(in)
         plot_data(in)
         
-    end %Static methods
+    end
     
     
 end  % classdef
