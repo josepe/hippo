@@ -27,6 +27,7 @@ classdef Band <handle
         powspec=[]
         pspecerr=[]
         spgram=[]
+        
         params=[]
     end
     
@@ -87,6 +88,9 @@ classdef Band <handle
                     
                     wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
+                    
+%                 case'csv'  //develop for spike times as events
+%                     file=varargin
                 case 'branch'
                     % Copy all non-hidden properties.
                     this=varargin{1};
