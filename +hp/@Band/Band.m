@@ -20,6 +20,7 @@ classdef Band <handle
         tvector=[]
         fvector=[]
         tevents=[]
+        tspikes=[]
         
         nChannels=1
         Channels=1
@@ -181,6 +182,8 @@ classdef Band <handle
         out=SbandpassBW8(in,pass)
         out=ShighpassBW8(in,stop)
         out=SlowpassBW8(in,stop)
+        
+        out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
         
         
         
