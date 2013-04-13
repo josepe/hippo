@@ -90,8 +90,10 @@ classdef Band <handle
                     wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
-%                 case'csv'  //develop for spike times as events
-%                     file=varargin
+                case'events_from_csv'  //develop for spike times as events
+                    file=varargin
+
+                    case 'events_from_
                 case 'branch'
                     % Copy all non-hidden properties.
                     this=varargin{1};
