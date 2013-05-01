@@ -33,7 +33,7 @@ classdef Band <handle
     end
     
     methods
-        %Constructor
+        %%Constructor
         function wave = Band(type,varargin)
             import hp.*
             
@@ -90,10 +90,19 @@ classdef Band <handle
                     wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
-                case'events_from_csv'  //develop for spike times as events
-                    file=varargin
-
-                    case 'events_from_
+                case'event_times_from_csv'  %%develop for spike times as events
+                    if varargin < 2 
+                        error('missing sampling frequency')
+                    else if varargin >2 error('too many arguments')
+                    
+                    else
+                    
+                        tspikes
+                        
+                case 'events_from_dat'
+                        
+                        
+                        
                 case 'branch'
                     % Copy all non-hidden properties.
                     this=varargin{1};
