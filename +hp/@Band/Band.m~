@@ -20,12 +20,15 @@ classdef Band <handle
         tvector=[]
         fvector=[]
         tevents=[]
+<<<<<<< HEAD
         tspikes=[]
 <<<<<<< HEAD
 =======
         spbinsize=[]
         binspikes=[]
 >>>>>>> minor
+=======
+>>>>>>> Revert "discard"
         
         nChannels=1
         Channels=1
@@ -38,7 +41,7 @@ classdef Band <handle
     end
     
     methods
-        %%Constructor
+        %Constructor
         function wave = Band(type,varargin)
             import hp.*
             
@@ -96,6 +99,7 @@ classdef Band <handle
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
 <<<<<<< HEAD
+<<<<<<< HEAD
                 case'event_times_from_csv'  %%develop for spike times as events
                     if varargin < 2 
                         error('missing sampling frequency')
@@ -130,6 +134,12 @@ classdef Band <handle
                     
 
 >>>>>>> minor
+=======
+                case'events_from_csv'  //develop for spike times as events
+                    file=varargin
+
+                    case 'events_from_
+>>>>>>> Revert "discard"
                 case 'branch'
                     % Copy all non-hidden properties.
                     this=varargin{1};
@@ -221,9 +231,12 @@ classdef Band <handle
         out=ShighpassBW8(in,stop)
         out=SlowpassBW8(in,stop)
         
+<<<<<<< HEAD
         out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
 <<<<<<< HEAD
         
+=======
+>>>>>>> Revert "discard"
         
 =======
               

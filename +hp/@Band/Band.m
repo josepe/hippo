@@ -35,7 +35,7 @@ classdef Band <handle
     end
     
     methods
-        %%Constructor
+        %Constructor
         function wave = Band(type,varargin)
             import hp.*
             
@@ -93,6 +93,7 @@ classdef Band <handle
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
 <<<<<<< HEAD
+<<<<<<< HEAD
                 case'event_times_from_csv'  %%develop for spike times as events
                     if varargin < 2 
                         error('missing sampling frequency')
@@ -127,6 +128,12 @@ classdef Band <handle
                     
 
 >>>>>>> minor
+=======
+                case'events_from_csv'  //develop for spike times as events
+                    file=varargin
+
+                    case 'events_from_
+>>>>>>> Revert "discard"
                 case 'branch'
                     % Copy all non-hidden properties.
                     this=varargin{1};
