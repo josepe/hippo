@@ -21,6 +21,11 @@ classdef Band <handle
         fvector=[]
         tevents=[]
         tspikes=[]
+<<<<<<< HEAD
+=======
+        spbinsize=[]
+        binspikes=[]
+>>>>>>> minor
         
         nChannels=1
         Channels=1
@@ -90,6 +95,7 @@ classdef Band <handle
                     wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
+<<<<<<< HEAD
                 case'event_times_from_csv'  %%develop for spike times as events
                     if varargin < 2 
                         error('missing sampling frequency')
@@ -103,6 +109,27 @@ classdef Band <handle
                         
                         
                         
+=======
+                case'spike_csv'  %%develop for spike times as events
+                    wave.dataFile=varargin{2};
+                    wave.sampleFreq=varargin{3};
+                    op=importdata(wave.dataFile);
+                    wave.tspikes=op.data;
+                    if nargin >3
+                        deT=varargin{4};
+                        detin=deT(1);
+                        deten=deT(2);
+                        indices= wave.tspikes>detin & wave.tspikes<deten;
+                        wave.tspikes=wave.tspikes(indices);
+                    else
+                        detin=0;
+                        deten=wave.tspikes(end);
+                    end
+                    wave.tvector=detin:1/wave.sampleFreq:deten;
+                    
+                    
+
+>>>>>>> minor
                 case 'branch'
                     % Copy all non-hidden properties.
                     this=varargin{1};
@@ -195,11 +222,17 @@ classdef Band <handle
         out=SlowpassBW8(in,stop)
         
         out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
+<<<<<<< HEAD
         
         
+=======
+              
+>>>>>>> minor
         
         out=addchannel(in,data)
         new = copy(this)
+        
+        out=Sspikes2binnedData(in,binsize)
         
         function ind=index(in,times)
             in=interp1(in.tvector,(1:length(in.tvector))',times);
