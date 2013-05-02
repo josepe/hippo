@@ -36,6 +36,7 @@ classdef Band <handle
     
     methods
         %%Constructor
+        %Constructor
         function wave = Band(type,varargin)
             import hp.*
             
