@@ -92,21 +92,19 @@ classdef Band <handle
                     wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
-<<<<<<< HEAD
                 case'event_times_from_csv'  %%develop for spike times as events
                     if varargin < 2 
                         error('missing sampling frequency')
-                    else if varargin >2 error('too many arguments')
-                    
-                    else
-                    
-                        tspikes
+%                     else if varargin >2 error('too many arguments')
+%                     
+%                     else
+%                     
+%                         tspikes
+                    end
+             %   case 'events_from_dat'
                         
-                case 'events_from_dat'
                         
                         
-                        
-=======
                 case'spike_csv'  %%develop for spike times as events
                     wave.dataFile=varargin{2};
                     wave.sampleFreq=varargin{3};
@@ -126,7 +124,6 @@ classdef Band <handle
                     
                     
 
->>>>>>> minor
                 case 'branch'
                     % Copy all non-hidden properties.
                     this=varargin{1};
