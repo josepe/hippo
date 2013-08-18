@@ -89,7 +89,7 @@ classdef Band <handle
                     else wave.ampGain=1000;
                     end
                     
-                    wave.nrSamples= size(wave.data,2);
+                    wave.nrSamples= size(wave.data,1);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
                 case'event_times_from_csv'  %%develop for spike times as events
