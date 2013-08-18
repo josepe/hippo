@@ -126,7 +126,7 @@ classdef Band <handle
                     wave.dataFile=varargin{2};
                     eval(['wave.data='varargin{4}]);
                     wave.sampleFreq=varargin{3};
-                    wave.nrSamples= size(wave.data,2);
+                        wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
                     
