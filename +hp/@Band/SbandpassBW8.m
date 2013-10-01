@@ -1,6 +1,6 @@
-out=bandpassBW8(in,band)
-
-s=size(data);
+function out=SbandpassBW8(in,band)
+out=in;
+s=size(in.data);
 Fs = in.sampleFreq;  % Sampling Frequency
 
 N   = 8;    % Order
