@@ -122,21 +122,13 @@ classdef Band <handle
                     end
                     wave.tvector=detin:1/wave.sampleFreq:deten;
                     
-<<<<<<< HEAD
-%                 case'mat'  %%develop for spike times as events
+
+%                 case'mat'  %load from mat file
 %                     wave.dataFile=varargin{2};
-%                     %eval(['wave.data='varargin{4}]);
-%                     wave.sampleFreq=varargin{3};
+%                     eval('wave.data= varargin{3}');
+%                     wave.sampleFreq=varargin{4};
 %                     wave.nrSamples= size(wave.data,2);
 %                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
-=======
-                case'mat'  %load from mat file
-                    wave.dataFile=varargin{2};
-                    eval('wave.data= varargin{3}');
-                    wave.sampleFreq=varargin{4};
-                    wave.nrSamples= size(wave.data,2);
-                    wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
->>>>>>> 0af0634aae70041732b4c2875952f0c7c21cf7c7
                     
                     %==============================================================%
                 case 'ch' %load from variable in workspace
