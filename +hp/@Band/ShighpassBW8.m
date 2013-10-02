@@ -1,4 +1,4 @@
-function out = highpassBW8(in,stop)
+function out = ShighpassBW8(in,stop)
 
 out=in;
 %HIGHPASSBW8 Returns a discrete-time filter object.

@@ -122,13 +122,29 @@ classdef Band <handle
                     end
                     wave.tvector=detin:1/wave.sampleFreq:deten;
                     
+<<<<<<< HEAD
 %                 case'mat'  %%develop for spike times as events
 %                     wave.dataFile=varargin{2};
 %                     %eval(['wave.data='varargin{4}]);
 %                     wave.sampleFreq=varargin{3};
 %                     wave.nrSamples= size(wave.data,2);
 %                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
+=======
+                case'mat'  %load from mat file
+                    wave.dataFile=varargin{2};
+                    eval('wave.data= varargin{3}');
+                    wave.sampleFreq=varargin{4};
+                    wave.nrSamples= size(wave.data,2);
+                    wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
+>>>>>>> 0af0634aae70041732b4c2875952f0c7c21cf7c7
                     
+                    %==============================================================%
+                case 'ch' %load from variable in workspace
+                    wave.dataFile='workspace';
+                    wave.data=varargin{1};
+                    wave.sampleFreq=varargin{2};
+                    wave.nrSamples= size(wave.data,2);
+                    wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
 
                 case 'branch'
@@ -150,6 +166,20 @@ classdef Band <handle
             out=hp.Band.copy(in);
         end
         
+        function str=sp(in)
+            str.data=in.data;
+            str.Fs=in.sampleFreq;
+            str.type='vector';
+            str.SPTIdentifier.type='Signal';
+            str.SPTIdentifier.version='1.0';
+            str.lineinfo.color= [0 0 1];
+            str.lineinfo.linestyle= '-';
+            str.lineinfo.columns=1;
+            str.label=in.dataFile;
+        end
+    
+            
+        
         function setParams(in,params)
             in.params=params;
             in.params.Fs=in.sampleFreq;
@@ -169,6 +199,14 @@ classdef Band <handle
                 hp.Band.Splot_data(this,range);
             else
                 hp.Band.Splot_data(this);
+            end
+        end
+        
+        function plotSpec(this,lg)
+            if nargin==2
+                hp.Band.Splot_spect(this,lg);
+            else
+                hp.Band.Splot_spect(this);
             end
         end
         
@@ -203,6 +241,9 @@ classdef Band <handle
         function lowpass(in,stop)
             hp.Band.SlowpassBW8(in,stop);
         end
+        
+        
+            
         
         
         
@@ -241,6 +282,7 @@ classdef Band <handle
         
         Splot_events(in)
         Splot_data(in,range)
+        Splot_spect(in,lg)
         
     end %Static methods
     

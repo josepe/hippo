@@ -1,4 +1,4 @@
-function out = lowpassBW8(in,stop)
+function out = SlowpassBW8(in,stop)
 
 out=in;
 %LOWPASSBW8 Returns a discrete-time filter object.

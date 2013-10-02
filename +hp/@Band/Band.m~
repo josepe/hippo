@@ -89,7 +89,7 @@ classdef Band <handle
                     else wave.ampGain=1000;
                     end
                     
-                    wave.nrSamples= size(wave.data,2);
+                    wave.nrSamples= size(wave.data,1);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
                 case'event_times_from_csv'  %%develop for spike times as events
@@ -122,13 +122,20 @@ classdef Band <handle
                     end
                     wave.tvector=detin:1/wave.sampleFreq:deten;
                     
-                case'mat'  %%develop for spike times as events
+                case'mat'  %load from mat file
                     wave.dataFile=varargin{2};
-                    eval(['wave.data='varargin{4}]);
-                    wave.sampleFreq=varargin{3};
-                        wave.nrSamples= size(wave.data,2);
+                    eval('wave.data= varargin{3}');
+                    wave.sampleFreq=varargin{4};
+                    wave.nrSamples= size(wave.data,2);
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
+                    %==============================================================%
+                case 'ch' %load from variable in workspace
+                    wave.dataFile='workspace';
+                    wave.data=varargin{1};
+                    wave.sampleFreq=varargin{2};
+                    wave.nrSamples= size(wave.data,2);
+                    wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
 
                 case 'branch'
@@ -149,6 +156,13 @@ classdef Band <handle
         function out=clone(in)
             out=hp.Band.copy(in);
         end
+        
+        function str=spstruct(in)
+            str.data=in.data;
+            str.Fs=in.sampleFreq;
+            str.type='vector';
+            
+            
         
         function setParams(in,params)
             in.params=params;
@@ -203,6 +217,9 @@ classdef Band <handle
         function lowpass(in,stop)
             hp.Band.SlowpassBW8(in,stop);
         end
+        
+        
+            
         
         
         
