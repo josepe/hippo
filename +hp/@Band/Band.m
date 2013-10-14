@@ -31,6 +31,8 @@ classdef Band <handle
         pspecerr=[]
         spgram=[]
         
+        pl=[] %current plot
+        
         params=[]
     end
     
@@ -175,6 +177,10 @@ classdef Band <handle
         function setParams(in,params)
             in.params=params;
             in.params.Fs=in.sampleFreq;
+        end
+        
+        function resetPl(in,params)
+            in.pl=[];
         end
         
         
