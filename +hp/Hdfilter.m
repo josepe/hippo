@@ -1,4 +1,4 @@
-function out=chita_ripple_filter(in,Hd)
+function out=Hdfilter(in,Hd)
 %filtra senal in.dataSamples usando objeto objeto filtro Hd
  
 out=in;

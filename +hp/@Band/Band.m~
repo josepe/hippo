@@ -31,6 +31,8 @@ classdef Band <handle
         pspecerr=[]
         spgram=[]
         
+        pl=[] %current plot
+        
         params=[]
     end
     
@@ -122,12 +124,13 @@ classdef Band <handle
                     end
                     wave.tvector=detin:1/wave.sampleFreq:deten;
                     
-                case'mat'  %load from mat file
-                    wave.dataFile=varargin{2};
-                    eval('wave.data= varargin{3}');
-                    wave.sampleFreq=varargin{4};
-                    wave.nrSamples= size(wave.data,2);
-                    wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
+
+%                 case'mat'  %load from mat file
+%                     wave.dataFile=varargin{2};
+%                     eval('wave.data= varargin{3}');
+%                     wave.sampleFreq=varargin{4};
+%                     wave.nrSamples= size(wave.data,2);
+%                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
                     %==============================================================%
                 case 'ch' %load from variable in workspace
@@ -157,16 +160,27 @@ classdef Band <handle
             out=hp.Band.copy(in);
         end
         
-        function str=spstruct(in)
+        function str=sp(in)
             str.data=in.data;
             str.Fs=in.sampleFreq;
             str.type='vector';
-            
+            str.SPTIdentifier.type='Signal';
+            str.SPTIdentifier.version='1.0';
+            str.lineinfo.color= [0 0 1];
+            str.lineinfo.linestyle= '-';
+            str.lineinfo.columns=1;
+            str.label=in.dataFile;
+        end
+    
             
         
         function setParams(in,params)
             in.params=params;
             in.params.Fs=in.sampleFreq;
+        end
+        
+        function resetPl(in,params)
+            in.pl=[];
         end
         
         
@@ -183,6 +197,14 @@ classdef Band <handle
                 hp.Band.Splot_data(this,range);
             else
                 hp.Band.Splot_data(this);
+            end
+        end
+        
+        function plotSpec(this,lg)
+            if nargin==2
+                hp.Band.Splot_spect(this,lg);
+            else
+                hp.Band.Splot_spect(this);
             end
         end
         
@@ -238,6 +260,7 @@ classdef Band <handle
         out=SbandpassBW8(in,pass)
         out=ShighpassBW8(in,stop)
         out=SlowpassBW8(in,stop)
+        out=
         
         out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
               
@@ -258,6 +281,7 @@ classdef Band <handle
         
         Splot_events(in)
         Splot_data(in,range)
+        Splot_spect(in,lg)
         
     end %Static methods
     

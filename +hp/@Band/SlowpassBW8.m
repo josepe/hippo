@@ -1,6 +1,7 @@
 function out = SlowpassBW8(in,stop)
 
 out=in;
+s=size(in.data);
 %LOWPASSBW8 Returns a discrete-time filter object.
 
 %
@@ -20,8 +21,7 @@ Fc = stop;  % Cutoff Frequency
 % Construct an FDESIGN object and call its BUTTER method.
 h  = fdesign.lowpass('N,F3dB', N, Fc, Fs);
 Hd = design(h, 'butter');
-
 out.data=filter(Hd,in.data);
-
+out.data=reshape(hp.filtfilthd(Hd,in.data(:)),s(1),s(2));
 
 % [EOF]
