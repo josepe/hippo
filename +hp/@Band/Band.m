@@ -192,7 +192,7 @@ classdef Band <handle
                 [this.powspec,this.fvector,this.pspecerr]=mtspectrumc(this.data,this.params);
         end
         
-        function plotData(this,range)
+        function plot(this,range)
             if nargin ==2
                 hp.Band.Splot_data(this,range);
             else
@@ -239,6 +239,9 @@ classdef Band <handle
         function lowpass(in,stop)
             hp.Band.SlowpassBW8(in,stop);
         end
+        function hdfilter(in,Hd)
+            hp.Band.Hdfilter(in,Hd);
+        end
         
         
             
@@ -260,6 +263,7 @@ classdef Band <handle
         out=SbandpassBW8(in,pass)
         out=ShighpassBW8(in,stop)
         out=SlowpassBW8(in,stop)
+        out=Hdfilter(in,Hd)
         
         out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
               
