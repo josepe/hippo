@@ -179,7 +179,6 @@ classdef Band <handle
             in.params.Fs=in.sampleFreq;
         end
         
-        function resetPl(in,params)
         function resetPl(in)
             in.pl=[];
         end
