@@ -180,6 +180,7 @@ classdef Band <handle
         end
         
         function resetPl(in,params)
+        function resetPl(in)
             in.pl=[];
         end
         
