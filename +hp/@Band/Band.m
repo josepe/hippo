@@ -46,7 +46,8 @@ classdef Band <handle
                     dataFile=varargin{1};
                     wave.dataFile=dataFile;
                     [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
-                    [wave.timestamps,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
+                    [timestamp_dummy,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
+                    clear timestamp_dummy; % timestamp read with getRawCSCTimestamps(dataFile) is throwing errors; override.
                     
                     %%% time grid %%%
 

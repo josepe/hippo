@@ -46,7 +46,8 @@ classdef Band <handle
                     dataFile=varargin{1};
                     wave.dataFile=dataFile;
                     [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
-                    [wave.timestamps,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
+                    [wav,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
+                    clear timestamp_dummy; % timestamp read with getRawCSCTimestamps(dataFile) is throwing errors; override.
                     
                     %%% time grid %%%
 
@@ -179,7 +180,7 @@ classdef Band <handle
             in.params.Fs=in.sampleFreq;
         end
         
-        function resetPl(in,params)
+        function resetPl(in)
             in.pl=[];
         end
         
@@ -192,7 +193,7 @@ classdef Band <handle
                 [this.powspec,this.fvector,this.pspecerr]=mtspectrumc(this.data,this.params);
         end
         
-        function plotData(this,range)
+        function plot(this,range)
             if nargin ==2
                 hp.Band.Splot_data(this,range);
             else
@@ -239,6 +240,9 @@ classdef Band <handle
         function lowpass(in,stop)
             hp.Band.SlowpassBW8(in,stop);
         end
+        function hdfilter(in,Hd)
+            hp.Band.Hdfilter(in,Hd);
+        end
         
         
             
@@ -260,7 +264,7 @@ classdef Band <handle
         out=SbandpassBW8(in,pass)
         out=ShighpassBW8(in,stop)
         out=SlowpassBW8(in,stop)
-        out=
+        out=Hdfilter(in,Hd)
         
         out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
               
