@@ -7,7 +7,7 @@ classdef Band <handle
         timestamps
         nrBlocks
         isContinous
-        headerInfo
+        
     end
     
     properties
@@ -27,26 +27,34 @@ classdef Band <handle
         nChannels=1
         Channels=1
         ampGain=1
+        powbands=[]
         powspec=[]
         pspecerr=[]
         spgram=[]
         
         pl=[] %current plot
         
-        params=[]
+        params=[] %for spectral computations
+        headerInfo % acquisition information
+        breadcrumbs=cell(1)
+        file_type=[]
+        argum=[]
+        
     end
     
     methods
         %%Constructor
         function wave = Band(type,varargin)
             import hp.*
+            wave.file_type=type;
+            wave.argum=varargin;
             
             switch type
                 case 'cheetah'
                     dataFile=varargin{1};
                     wave.dataFile=dataFile;
                     [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
-                    [wav,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
+                    [timestamp_dummy,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
                     clear timestamp_dummy; % timestamp read with getRawCSCTimestamps(dataFile) is throwing errors; override.
                     
                     %%% time grid %%%
@@ -153,6 +161,7 @@ classdef Band <handle
             
             
             wave.dir=pwd;
+            wave.breadcrumbs{1}='%start';
             
         end
         
@@ -178,6 +187,9 @@ classdef Band <handle
         function setParams(in,params)
             in.params=params;
             in.params.Fs=in.sampleFreq;
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.setParams;';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=evalc('in.params');
+       
         end
         
         function resetPl(in)
@@ -188,9 +200,12 @@ classdef Band <handle
         function pspectrum(this,params)
             if nargin==2
                 this.params=params;
+                this.breadcrumbs{length(this.breadcrumbs)+1}=evalc('this.params');
             end 
                 this.params.Fs=this.sampleFreq;
                 [this.powspec,this.fvector,this.pspecerr]=mtspectrumc(this.data,this.params);
+                this.breadcrumbs{length(this.breadcrumbs)+1}='wave.pspectrum;';
+                
         end
         
         function plot(this,range)
@@ -200,6 +215,21 @@ classdef Band <handle
                 hp.Band.Splot_data(this);
             end
         end
+        
+        function bandpow(this,frange,frange2)  %power concentration in band frange [flow fhigh]
+            if nargin==3
+                hp.Band.Sbandpow(this,frange,frange2);
+                this.breadcrumbs{length(this.breadcrumbs)+1}='wave.bandpow';
+                this.breadcrumbs{length(this.breadcrumbs)+1}=frange;
+                this.breadcrumbs{length(this.breadcrumbs)+1}=frange2;
+                
+            else
+                hp.Band.Sbandpow(this,frange);
+                this.breadcrumbs{length(this.breadcrumbs)+1}='wave.bandpow';
+                this.breadcrumbs{length(this.breadcrumbs)+1}=frange;
+            end
+        end
+        
         
         function plotSpec(this,lg)
             if nargin==2
@@ -211,14 +241,21 @@ classdef Band <handle
         
         function resample(this,newfreq)
             hp.Band.Sresample(this,newfreq) ;
+            this.breadcrumbs{length(this.breadcrumbs)+1}='wave.resample';
+            this.breadcrumbs{length(this.breadcrumbs)+1}=newfreq;
+            
         end
         
         function cut(this,cut)
             hp.Band.Scut(this,cut);
+            this.breadcrumbs{length(this.breadcrumbs)+1}='wave.cut';
+            this.breadcrumbs{length(this.breadcrumbs)+1}=cut;
         end
         
         function reshape(in,winlength)
             hp.Band.Sreshape(in,winlength);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.reshape';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=winlength;
         end
         
         function indices(in,times)
@@ -231,17 +268,26 @@ classdef Band <handle
         
         function bandpass(in,pass)
             hp.Band.SbandpassBW8(in,pass);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.bandpass';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=pass;
         end
         
         function highpass(in,stop)
             hp.Band.ShighpassBW8(in,stop);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.highpass';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=stop;
         end
         
         function lowpass(in,stop)
             hp.Band.SlowpassBW8(in,stop);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.lowpass';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=stop;
+            
         end
         function hdfilter(in,Hd)
             hp.Band.Hdfilter(in,Hd);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.hdfilter';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=Hd;
         end
         
         
@@ -259,12 +305,16 @@ classdef Band <handle
         out=Sprosoverlap(in,len,doverlap)
         out=Scut(in,cut)
         out=Sreshape(in,winlength)
-        out=Sindices(in,times);
+        out=Sindices(in,times)
         out=Sremovelines(in,freqs,Q)
         out=SbandpassBW8(in,pass)
         out=ShighpassBW8(in,stop)
         out=SlowpassBW8(in,stop)
+        out=SbandpassFIR(in,pass)
+        out=ShighpassFIR(in,stop)
+        out=SlowpassFIR(in,stop)
         out=Hdfilter(in,Hd)
+        out=Sbandpow(in,frange,frange2)
         
         out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
               
@@ -278,6 +328,13 @@ classdef Band <handle
             in=interp1(in.tvector,(1:length(in.tvector))',times);
             ind=round(in);
         end
+        
+        
+        function ind=findex(in,frecs)
+            in=interp1(in.fvector,(1:length(in.fvector))',frecs);
+            ind=round(in);
+        end
+        
         
         function t=t_vector(sampfreq,N)
             t=(0:1/sampfreq:(N-1)/sampfreq)';
