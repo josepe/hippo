@@ -5,7 +5,7 @@ if nargin <2
     pow=in.powspec';    
 elseif lg=='l'
     pow=log(in.powspec');
-elseif lg=='n'
+else
     pow=in.powspe';
 end
 figure,plot(in.fvector',pow/(1.5*max(pow(:))));
