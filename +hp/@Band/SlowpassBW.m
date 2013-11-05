@@ -1,4 +1,4 @@
-function out = SlowpassBW8(in,stop)
+function out = SlowpassBW(in,stop,order)
 
 out=in;
 s=size(in.data);
@@ -15,7 +15,12 @@ s=size(in.data);
 % All frequency values are in Hz.
 Fs = in.sampleFreq;  % Sampling Frequency
 
-N  = 8;   % Order
+if nargin>2   % Set filter Order
+    N   = order;
+else
+    N=8; 
+end
+
 Fc = stop;  % Cutoff Frequency
 
 % Construct an FDESIGN object and call its BUTTER method.

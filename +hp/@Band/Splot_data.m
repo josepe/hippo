@@ -30,7 +30,8 @@ import hp.*
 
 %grafica datos y eventos en objeto in
 if nargin <2
-    in.pl=plot(in.tvector(:),in.data(:)/(1.5*max(in.data(:))));
+%    in.pl=plot(in.tvector(:),in.data(:)/(1.5*max(in.data(:))));
+     in.pl=plot(in.tvector(:),in.data(:));
 elseif nargin==2
     ind=Band.index(in,range);
     indrange=ind(1):ind(2);

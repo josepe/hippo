@@ -17,12 +17,14 @@ classdef Band <handle
         nrSamples
         sampleFreq
         data=[]
+        adaptsdev=[]
+        adaptenv=[]
         tvector=[]
         fvector=[]
         tevents=[]
-        tspikes=[]
-        spbinsize=[]
-        binspikes=[]
+%         tspikes=[]
+%         spbinsize=[]
+%         binspikes=[]
         
         nChannels=1
         Channels=1
@@ -41,9 +43,10 @@ classdef Band <handle
         argum=[]
         
     end
-    
+ 
+%============================== CONSTRUCTOR ===============================    
     methods
-        %%Constructor
+       
         function wave = Band(type,varargin)
             import hp.*
             wave.file_type=type;
@@ -51,14 +54,22 @@ classdef Band <handle
             
             switch type
                 case 'cheetah'
-                    dataFile=varargin{1};
-                    wave.dataFile=dataFile;
-                    [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(dataFile);
-                    [timestamp_dummy,wave.data] = getRawCSCData(dataFile, 0, wave.nrSamples, 2 );
+                    datafile=varargin{1};
+                    wave.dataFile=datafile;
+                    [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(datafile);
+                    [~,dat] = getRawCSCData(datafile, 0, wave.nrSamples, 2 );
                     clear timestamp_dummy; % timestamp read with getRawCSCTimestamps(dataFile) is throwing errors; override.
-                    
+                              
+                    %--extract voltage scaling from headerInfo
+                    scale_string=wave.headerInfo{16};
+                    if  ~all(scale_string(1:11)=='-ADBitVolts')
+                        error('-ADBitVolts not found')
+                    else
+                        wave.data=str2num(scale_string(13:end))*dat;
+                    end
+                     
                     %%% time grid %%%
-
+                    
                     wave.tvector=wave.t_vector(wave.sampleFreq,wave.nrSamples);
                     
                     %%%%event times%%%
@@ -66,11 +77,11 @@ classdef Band <handle
                     ts=wave.tvector(1:512:length(wave.tvector));
                     
                     if size(varargin,2) > 1
-                        eventsFile=varargin{2};
-                        events = getRawTTLs(eventsFile);
+                        eventsfile=varargin{2};
+                        events = getRawTTLs(eventsfile);
                         evn=events(2:end-1,1);
-                        wave.eventsFile=eventsFile;
-                        wave.tevents=interp1(wave.timestamps',ts',evn); 
+                        wave.eventsFile=eventsfile;
+                        wave.tevents=interp1(wave.timestamps',ts',evn);
                     end
                     
                 case 'crcns'
@@ -164,12 +175,13 @@ classdef Band <handle
             wave.breadcrumbs{1}='%start';
             
         end
-        
-        %% methods%%
+%==========================================================================       
+%============================== METHODS ===================================
+%__________________________________________________________________________
         function out=clone(in)
             out=hp.Band.copy(in);
         end
-        
+%__________________________________________________________________________        
         function str=sp(in)
             str.data=in.data;
             str.Fs=in.sampleFreq;
@@ -183,7 +195,7 @@ classdef Band <handle
         end
     
             
-        
+%__________________________________________________________________________        
         function setParams(in,params)
             in.params=params;
             in.params.Fs=in.sampleFreq;
@@ -196,7 +208,7 @@ classdef Band <handle
             in.pl=[];
         end
         
-        
+%__________________________________________________________________________        
         function pspectrum(this,params)
             if nargin==2
                 this.params=params;
@@ -207,7 +219,7 @@ classdef Band <handle
                 this.breadcrumbs{length(this.breadcrumbs)+1}='wave.pspectrum;';
                 
         end
-        
+%__________________________________________________________________________        
         function plot(this,range)
             if nargin ==2
                 hp.Band.Splot_data(this,range);
@@ -215,7 +227,7 @@ classdef Band <handle
                 hp.Band.Splot_data(this);
             end
         end
-        
+%_________________________________________________________________________       
         function bandpow(this,frange,frange2)  %power concentration in band frange [flow fhigh]
             if nargin==3
                 hp.Band.Sbandpow(this,frange,frange2);
@@ -230,92 +242,147 @@ classdef Band <handle
             end
         end
         
-        
+%__________________________________________________________________________
         function plotSpec(this,lg)
             if nargin==2
                 hp.Band.Splot_spect(this,lg);
             else
                 hp.Band.Splot_spect(this);
             end
-        end
-        
+        end      
+%__________________________________________________________________________
         function resample(this,newfreq)
             hp.Band.Sresample(this,newfreq) ;
             this.breadcrumbs{length(this.breadcrumbs)+1}='wave.resample';
             this.breadcrumbs{length(this.breadcrumbs)+1}=newfreq;
             
         end
-        
+%__________________________________________________________________________        
         function cut(this,cut)
             hp.Band.Scut(this,cut);
             this.breadcrumbs{length(this.breadcrumbs)+1}='wave.cut';
             this.breadcrumbs{length(this.breadcrumbs)+1}=cut;
         end
+%__________________________________________________________________________        
+        function cutpoints(this,tinitial,Npoints)
+            hp.Band.Scutpoints(this,tinitial,Npoints);
+            this.breadcrumbs{length(this.breadcrumbs)+1}='wave.cutpoints';
+            this.breadcrumbs{length(this.breadcrumbs)+1}=tinitial;
+            this.breadcrumbs{length(this.breadcrumbs)+1}=Npoints;
+            
+        end
         
+%__________________________________________________________________________        
         function reshape(in,winlength)
             hp.Band.Sreshape(in,winlength);
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.reshape';
             in.breadcrumbs{length(in.breadcrumbs)+1}=winlength;
         end
-        
-        function indices(in,times)
-            hp.Band.index(in,times);
+%__________________________________________________________________________       
+        function ind=indices(in,times)
+            ind=hp.Band.index(in,times);
         end
+%__________________________________________________________________________       
+        function np=npoints(in,tim,base)
+            np=hp.Band.numpoints(in,tim,base);
+        end
+%__________________________________________________________________________        
         
         function removelines(in,freqs,Q)
             hp.Band.Sremovelines(in,freqs,Q);
         end
-        
-        function bandpass(in,pass)
-            hp.Band.SbandpassBW8(in,pass);
+%__________________________________________________________________________   
+ 
+        function bandpass(in,pass,order)
+            if nargin>2
+                hp.Band.SbandpassBW(in,pass,order);
+            else
+                hp.Band.SbandpassBW(in,pass);
+            end
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.bandpass';
             in.breadcrumbs{length(in.breadcrumbs)+1}=pass;
         end
-        
-        function highpass(in,stop)
-            hp.Band.ShighpassBW8(in,stop);
+%__________________________________________________________________________        
+        function highpass(in,stop,order)
+            if nargin>2
+                hp.Band.ShighpassBW(in,pass,order);
+            else
+                hp.Band.ShighpassBW(in,pass);
+            end
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.highpass';
             in.breadcrumbs{length(in.breadcrumbs)+1}=stop;
         end
-        
-        function lowpass(in,stop)
-            hp.Band.SlowpassBW8(in,stop);
+%__________________________________________________________________________        
+        function lowpass(in,stop,order)
+            if nargin>2
+                hp.Band.SlowpassBW(in,pass,order);
+            else
+                hp.Band.SlowpassBW(in,pass);
+            end
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.lowpass';
             in.breadcrumbs{length(in.breadcrumbs)+1}=stop;
             
         end
+%__________________________________________________________________________       
         function hdfilter(in,Hd)
             hp.Band.Hdfilter(in,Hd);
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.hdfilter';
             in.breadcrumbs{length(in.breadcrumbs)+1}=Hd;
         end
         
-        
-            
-        
-        
-        
-        
+%__________________________________________________________________________ 
+ 
+ function adaptSdev(in,Nsamples)
+     out=in;
+     
+     if nargin>1
+         out.adaptsdev=hp.Band.SadaptSdev(in.data,Nsamples);
+     else
+         out.adaptsdev=hp.Band.SadaptSdev(in.data);
+     end
+     
+ end
        
+ 
+%__________________________________________________________________________  
+  function out=adaptEnv(in,Nsamples)
+      out=in;
+     if nargin>1
+         out.adaptenv=hp.Band.SadaptSdev(abs(in.data),Nsamples);
+     else
+         out.adaptend=hp.Band.SadaptSdev(abs(in.data));
+     end
+     
+ end
+ 
+ 
     end % methods
-    
+
+%==========================================================================    
+%========================= static methods =================================
     methods (Static)
         
         out=Sresample(in,newfreq) %clone object at a different sampling frequency
         out=Sprosoverlap(in,len,doverlap)
         out=Scut(in,cut)
+        out=Scutpoints(in,tinitial,Npoints)
         out=Sreshape(in,winlength)
         out=Sindices(in,times)
         out=Sremovelines(in,freqs,Q)
-        out=SbandpassBW8(in,pass)
-        out=ShighpassBW8(in,stop)
-        out=SlowpassBW8(in,stop)
+        out=SbandpassBW(in,pass,order)
+        out=ShighpassBW(in,stop,order)
+        out=SlowpassBW(in,stop,order)
+        
+        sdev=SadaptSdev(dat,Nsamples)
+        %sdev=SadaptEnv(dat,Nsamples)
         %implement
         out=SbandpassFIR(in,pass)
         out=ShighpassFIR(in,stop)
         out=SlowpassFIR(in,stop)
         out=Hdfilter(in,Hd)
         out=Sbandpow(in,frange,frange2)
+        
+        
         
         out=Seventimes_to_series(times,Fs,deltaT) %temporal, modificar
               
@@ -324,26 +391,34 @@ classdef Band <handle
         new = copy(this)
         
         out=Sspikes2binnedData(in,binsize)
-        
-        function ind=index(in,times)
-            in=interp1(in.tvector,(1:length(in.tvector))',times);
-            ind=round(in);
-        end
-        
-        
-        function ind=findex(in,frecs)
-            in=interp1(in.fvector,(1:length(in.fvector))',frecs);
-            ind=round(in);
-        end
-        
-        
-        function t=t_vector(sampfreq,N)
-            t=(0:1/sampfreq:(N-1)/sampfreq)';
-        end
-        
         Splot_events(in)
         Splot_data(in,range)
         Splot_spect(in,lg)
+
+        
+ %_________________________________________________________________________        
+        function ind=index(in,times)
+            id=interp1(in.tvector,(1:length(in.tvector))',times);
+            ind=round(id);
+        end
+        
+ %_________________________________________________________________________        
+        function ind=findex(frecs)
+            id=interp1(in.fvector,(1:length(in.fvector))',frecs);
+            ind=round(id);
+        end
+ %_________________________________________________________________________        
+         function np=numpoints(in,tim,base)
+             % tim = maximum total time
+             % base= modulo 
+             np=base*floor(tim*in.sampleFreq/base);
+         end
+ %_________________________________________________________________________        
+        function t=t_vector(sampfreq,N)
+            t=(0:1/sampfreq:(N-1)/sampfreq)';
+        end            
+        
+        
         
     end %Static methods
     

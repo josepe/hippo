@@ -1,9 +1,14 @@
-function out=SbandpassBW8(in,band)
+function out=SbandpassBW(in,band,order)
 out=in;
 s=size(in.data);
 Fs = in.sampleFreq;  % Sampling Frequency
 
-N   = 8;    % Order
+if nargin>2   % Set filter Order
+    N   = order;
+else
+    N=8; 
+end
+    
 Fc1 = band(1);  % First Cutoff Frequency
 Fc2 = band(2);  % Second Cutoff Frequency
 
@@ -11,7 +16,7 @@ Fc2 = band(2);  % Second Cutoff Frequency
 h  = fdesign.bandpass('N,F3dB1,F3dB2', N, Fc1, Fc2, Fs);
 Hd = design(h, 'butter');
 
-out.data=reshape(hp.filtfilthd(Hd,in.data(:)),s(1),s(2));
+out.data=reshape(filter(Hd,in.data(:)),s(1),s(2));
 
 
 % [EOF]

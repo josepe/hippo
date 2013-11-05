@@ -1,4 +1,4 @@
-function out = ShighpassBW8(in,stop)
+function out = ShighpassBW(in,stop,order)
 
 out=in;
 s=size(in.data);
@@ -17,14 +17,19 @@ s=size(in.data);
 
 Fs = in.sampleFreq;  % Sampling Frequency
 
-N  = 8;    % Order
+if nargin>2   % Set filter Order
+    N   = order;
+else
+    N=8; 
+end
+
 Fc = stop;  % Cutoff Frequency
 
 % Construct an FDESIGN object and call its BUTTER method.
 h  = fdesign.highpass('N,F3dB', N, Fc, Fs);
 Hd = design(h, 'butter');
 out.data=filter(Hd,in.data);
-out.data=reshape(hp.filtfilthd(Hd,in.data(:)),s(1),s(2));
+out.data=reshape(filter(Hd,in.data(:)),s(1),s(2));
 
 % [EOF]
 
