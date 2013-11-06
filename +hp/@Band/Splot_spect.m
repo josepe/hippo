@@ -8,5 +8,5 @@ elseif lg=='l'
 else
     pow=in.powspe';
 end
-figure,plot(in.fvector',mean(pow));
+figure,plot(in.fvector',pow);
 end

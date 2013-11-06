@@ -56,7 +56,9 @@ classdef Band <handle
                 case 'cheetah'
                     datafile=varargin{1};
                     wave.dataFile=datafile;
-                    [wave.timestamps,wave.nrBlocks,wave.nrSamples,wave.sampleFreq,wave.isContinous,wave.headerInfo]=getRawCSCTimestamps(datafile);
+                    [wave.timestamps,wave.nrBlocks,wave.nrSamples,...
+                        wave.sampleFreq,wave.isContinous,wave.headerInfo]...
+                        =getRawCSCTimestamps(datafile);
                     [~,dat] = getRawCSCData(datafile, 0, wave.nrSamples, 2 );
                     clear timestamp_dummy; % timestamp read with getRawCSCTimestamps(dataFile) is throwing errors; override.
                     
@@ -99,7 +101,8 @@ classdef Band <handle
                     Periods=str.Periods;
                     %Resample=str.Resample;
                     
-                    dat= LoadBinary(str.FileName,str.Channels,str.nChannels, str.method, str.intype, str.outtype, str.Periods);
+                    dat= LoadBinary(str.FileName,str.Channels,str.nChannels,...
+                        str.method, str.intype, str.outtype, str.Periods);
                     
                     wave.data=double(dat')./2^15*200; %VERIFICAR FORMULA
                     

@@ -14,14 +14,6 @@ out=in;
 % end
 % end
 signal=in.powspec;
-extract indices
-
 for i=1:length(freqs)
-    %cleave%
-    
-    %interpolate
-    
-    %stictch
-    
     
     
