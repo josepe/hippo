@@ -26,7 +26,10 @@ Fc = stop;  % Cutoff Frequency
 % Construct an FDESIGN object and call its BUTTER method.
 h  = fdesign.lowpass('N,F3dB', N, Fc, Fs);
 Hd = design(h, 'butter');
-out.data=filter(Hd,in.data);
-out.data=reshape(hp.filtfilthd(Hd,in.data(:)),s(1),s(2));
+[b,a] = sos2tf(Hd.sosMatrix,Hd.ScaleValues);
+
+out.data=reshape(filtfilt(b,a,in.data(:)),s(1),s(2));
+
+
 
 % [EOF]

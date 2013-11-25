@@ -22,10 +22,11 @@ classdef Band <handle
         tvector=[]
         fvector=[]
         tevents=[]
+        eventind=[]
         %         tspikes=[]
         %         spbinsize=[]
         %         binspikes=[]
-        
+        thresh=[]
         nChannels=1
         Channels=1
         ampGain=1
@@ -222,6 +223,12 @@ classdef Band <handle
             this.breadcrumbs{length(this.breadcrumbs)+1}='wave.pspectrum;';
             
         end
+         function hilbert(this)
+           
+            this.data=hilbert(this.data);
+            this.breadcrumbs{length(this.breadcrumbs)+1}='hilbert transformed';
+            
+        end
         %__________________________________________________________________
         function plot(this,range)
             if nargin ==2
@@ -297,8 +304,11 @@ classdef Band <handle
         end
         %__________________________________________________________________
         
-        function removelines(in,freqs,Q)
-            hp.Band.Sremovelines(in,freqs,Q);
+        function removelines(in,Q)
+            out=in;
+            for k=1:size(in.powspec,2)
+                out.powspec(:,k)=hp.Band.Sremovelines(in.powspec(:,k),Q.freqsin,Q.freqscut,Q.gap,Q.surround);
+            end
         end
         %__________________________________________________________________
         
@@ -311,12 +321,23 @@ classdef Band <handle
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.bandpass';
             in.breadcrumbs{length(in.breadcrumbs)+1}=pass;
         end
+        
+        %__________________________________________________________________
+        
+        function bandpassFIR(in,Flow,Fhigh,order)
+           
+            hp.Band.SbandpassFIReqripple(in,Flow,Fhigh,order);
+            
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.bandpass FIR';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=[Flow Fhigh order];
+        end 
+        
         %__________________________________________________________________
         function highpass(in,stop,order)
             if nargin>2
-                hp.Band.ShighpassBW(in,pass,order);
+                hp.Band.ShighpassBW(in,stop,order);
             else
-                hp.Band.ShighpassBW(in,pass);
+                hp.Band.ShighpassBW(in,stop);
             end
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.highpass';
             in.breadcrumbs{length(in.breadcrumbs)+1}=stop;
@@ -324,9 +345,9 @@ classdef Band <handle
         %__________________________________________________________________
         function lowpass(in,stop,order)
             if nargin>2
-                hp.Band.SlowpassBW(in,pass,order);
+                hp.Band.SlowpassBW(in,stop,order);
             else
-                hp.Band.SlowpassBW(in,pass);
+                hp.Band.SlowpassBW(in,stop);
             end
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.lowpass';
             in.breadcrumbs{length(in.breadcrumbs)+1}=stop;
@@ -339,9 +360,25 @@ classdef Band <handle
             in.breadcrumbs{length(in.breadcrumbs)+1}=Hd;
         end
         
+        %_________________________________________________________________
+        function out=absamp(in)
+            out=in;
+            out.data=abs(in.data);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='rectify data';
+
+        end
+        
+         %_________________________________________________________________
+        function out=zscoret(in)
+            out=in;
+            out.data=zscore(in.data);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='rectify data';
+
+        end
+        
         %__________________________________________________________________
         
-        function adaptSdev(in,Nsamples)
+        function out=adaptSdev(in,Nsamples)
             out=in;
             
             if nargin>1
@@ -352,20 +389,25 @@ classdef Band <handle
             
         end
         
-        
         %__________________________________________________________________
-        function out=adaptEnv(in,Nsamples)
-            out=in;
-            if nargin>1
-                out.adaptenv=hp.Band.SadaptSdev(abs(in.data),Nsamples);
-            else
-                out.adaptend=hp.Band.SadaptSdev(abs(in.data));
-            end
+        function setThres(in,thresvector)
             
-        end
+            in.thresh=thresvector;
+            in.breadcrumbs{length(in.breadcrumbs)+1}='setThres';
+            
+        end  
         
+         %__________________________________________________________________
+        function extractEvn(in)
+            
+                in.eventind=find(in.data>=in.thresh);
+            in.breadcrumbs{length(in.breadcrumbs)+1}='extract events';
+            
+        end 
         
     end % methods
+    
+   
     
 %==========================================================================
 %========================= static methods =================================
@@ -380,7 +422,6 @@ classdef Band <handle
         
         
         out=Sindices(in,times)
-        out=Sremovelines(in,freqs,Q)
         out=SbandpassBW(in,pass,order)
         out=ShighpassBW(in,stop,order)
         out=SlowpassBW(in,stop,order)
@@ -389,8 +430,12 @@ classdef Band <handle
         %sdev=SadaptEnv(dat,Nsamples)
         %implement
         out=SbandpassFIR(in,pass)
+        out = SbandpassFIReqripple(in,Flow,Fhigh,order)
         out=ShighpassFIR(in,stop)
         out=SlowpassFIR(in,stop)
+        
+        
+        
         out=Hdfilter(in,Hd)
         out=Sbandpow(in,frange,frange2)
         
@@ -407,6 +452,7 @@ classdef Band <handle
         Splot_data(in,range)
         Splot_spect(in,lg)
         
+       dataout=Sremovelines(datain,freqsin,freqscut,gap,surround)
         
         %__________________________________________________________________
         function ind=index(in,times)

@@ -1,27 +1,26 @@
-function out=Sremovelines(in,freqs,surround)
-import hp.*
-out=in;
-% if nargin<3
-%     Q=45;
-% end
-% if ~isempty(freqs)
-%     wo=2*freqs(1)/in.sampleFreq;
-%     bw=wo/Q;
-%     [b,a] = iirnotch(wo,bw);
-%     out.data=filtfilt(b,a,out.data);
-%  %   freqs(1)=[];
-% %    out=Band.removelines(out,freqs,Q);
-% end
-% end
-signal=in.powspec;
-extract indices
+function dataout=Sremovelines(datain,freqsin,freqscut,gap,surround)
 
-for i=1:length(freqs)
+dataout=datain;
+%todos las variables en 
+%calcular gap en n?mero de muestras
+df=freqsin(2)-freqsin(1);
+npoints_gap=floor(gap/df);
+npoints_surround=floor(surround/df);
+
+
+%extract indices from frequencies
+indices=interp1(freqsin(:),(1:length(freqsin(:)))',freqscut);
+ind=round(indices);
+
+
+
+for i=1:length(ind)
     %cleave%
+
+    % fill gaps, interpolating
+    indices_extern=[ind(i)-npoints_surround:ind(i)-npoints_gap ind(i)+npoints_gap:ind(i)+npoints_surround];
+    indices_intern=(ind(i)-npoints_gap+1:ind(i)+npoints_gap-1);
     
-    %interpolate
-    
-    %stictch
-    
-    
-    
+    data_corrected= interp1(indices_extern,datain(indices_extern),indices_intern,'linear');
+    dataout((ind(i)-npoints_gap+1:ind(i)+npoints_gap-1))=data_corrected;
+end

@@ -1,4 +1,4 @@
-function out = SbandpassFIReqripple(in,Flow,Fhigh,order)
+function out = SbandpassFIReqripple(in,Flow,Fhigh)
 %SBANDPASSFIREQRIPPLE Returns a discrete-time filter object.
 
 %
@@ -15,7 +15,7 @@ out=in;
 s=size(in.data);
 Fs = in.sampleFreq;  % Sampling Frequency
 
-N      = order;   % Order
+N      = ;   % Order
 Fstop1 = Flow(1);   % First Stopband Frequency
 Fpass1 = Flow(2);  % First Passband Frequency
 Fpass2 = Fhigh(1);  % Second Passband Frequency

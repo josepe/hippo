@@ -14,9 +14,12 @@ Fc2 = band(2);  % Second Cutoff Frequency
 
 % Construct an FDESIGN object and call its BUTTER method.
 h  = fdesign.bandpass('N,F3dB1,F3dB2', N, Fc1, Fc2, Fs);
+
 Hd = design(h, 'butter');
 
-out.data=reshape(filter(Hd,in.data(:)),s(1),s(2));
+[b,a] = sos2tf(Hd.sosMatrix,Hd.ScaleValues);
+
+out.data=reshape(filtfilt(b,a,in.data(:)),s(1),s(2));
 
 
 % [EOF]
