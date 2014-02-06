@@ -331,6 +331,15 @@ classdef Band <handle
             in.breadcrumbs{length(in.breadcrumbs)+1}='wave.bandpass FIR';
             in.breadcrumbs{length(in.breadcrumbs)+1}=[Flow Fhigh order];
         end 
+          %__________________________________________________________________
+        
+        function FIRNum(in,Num)
+           
+            hp.Band.SFIRNum(in,Num);
+            
+            in.breadcrumbs{length(in.breadcrumbs)+1}='wave.FIRNum';
+            in.breadcrumbs{length(in.breadcrumbs)+1}=[Num];
+        end 
         
         %__________________________________________________________________
         function highpass(in,stop,order)
@@ -433,6 +442,7 @@ classdef Band <handle
         out = SbandpassFIReqripple(in,Flow,Fhigh,order)
         out=ShighpassFIR(in,stop)
         out=SlowpassFIR(in,stop)
+        out=SFIRNum(in,Num);
         
         
         
