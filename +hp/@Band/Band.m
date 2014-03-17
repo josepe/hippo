@@ -414,6 +414,18 @@ classdef Band <handle
             
         end 
         
+          %__________________________________________________________________
+        function ind=index(in,times)
+            id=interp1(in.tvector,(1:length(in.tvector))',times);
+            ind=round(id);
+        end
+        
+        %__________________________________________________________________
+        function ind=findex(in,frecs)
+            id=interp1(in.fvector,(1:length(in.fvector))',frecs);
+            ind=round(id);
+        end
+        
     end % methods
     
    
@@ -464,17 +476,7 @@ classdef Band <handle
         
        dataout=Sremovelines(datain,freqsin,freqscut,gap,surround)
         
-        %__________________________________________________________________
-        function ind=index(in,times)
-            id=interp1(in.tvector,(1:length(in.tvector))',times);
-            ind=round(id);
-        end
-        
-        %__________________________________________________________________
-        function ind=findex(frecs)
-            id=interp1(in.fvector,(1:length(in.fvector))',frecs);
-            ind=round(id);
-        end
+      
         %__________________________________________________________________
         function np=numpoints_pow2(in,tim)
             % tim = maximum total time
